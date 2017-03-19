@@ -27,25 +27,18 @@ public class PlaceablePlane : MonoBehaviour
          * a collider active as it may be colliding with the parent object/building already inside 
          * the collider.
          */
-        // If the object we have collided with is another placeable object
-        if (other.tag == "Placeable")
-        {
-            // We cannot place there.
-            placeableScript.CanPlace = false;
-            // Switch the material colour to red to notify the player object cannot be placed
-            renderer.material.color = new Color(1f, 0f, 0f, .5f);
-        }
+                 
+        // We cannot place there.
+        placeableScript.CanPlace = false;
+        // Switch the material colour to red to notify the player object cannot be placed
+        renderer.material.color = new Color(1f, 0f, 0f, .5f);
     }
 
     void OnTriggerExit(Collider other)
     {
-        // If the object leaves the collider
-        if (other.tag == "Placeable")
-        {
-            // We can place the object again
-            placeableScript.CanPlace = true;
-            // Revert the plane back to its original colour
-            renderer.material.color = matInitColour;
-        }
+        // We can place the object again
+        placeableScript.CanPlace = true;
+        // Revert the plane back to its original colour
+        renderer.material.color = matInitColour;
     }
 }
