@@ -8,6 +8,12 @@ public class Placeable : MonoBehaviour
     public float yOffset = 0.11f;
     /// <summary> Can the object be placed at its current position? </summary>
     bool canPlace = true;
+    public bool CanPlace
+    {
+        get { return canPlace; }
+        set { canPlace = value; }
+    }
+
     /// <summary> Determines whether the object has already been palced </summary>
     bool isPlaced = false;
 
