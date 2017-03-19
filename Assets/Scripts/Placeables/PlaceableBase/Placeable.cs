@@ -8,6 +8,8 @@ public class Placeable : MonoBehaviour
     public float yOffset = 0.11f;
     /// <summary> Can the object be placed at its current position? </summary>
     bool canPlace = true;
+    /// <summary> Determines whether the object has already been palced </summary>
+    bool isPlaced = false;
 
     int floorMask;
 
@@ -18,9 +20,17 @@ public class Placeable : MonoBehaviour
 
 	void Update ()
     {
-        DeterminePosition();
+        if (Input.GetMouseButtonDown(0)) // 0 for left mouse button
+            PlaceObject();
+
+        // If the object has not already been placed then we can place move it.
+        if (!isPlaced)
+            DeterminePosition();
 	}
 
+    /// <summary>
+    /// Handles the logic for moving the object based on the mouse position.
+    /// </summary>
     void DeterminePosition()
     {
         // Cast a ray from the main camera to the mouse position
@@ -34,5 +44,19 @@ public class Placeable : MonoBehaviour
             pos.y += yOffset;
             transform.position = pos;
         }
+    }
+
+    /// <summary>
+    /// Finalises the object's position.
+    /// </summary>
+    void PlaceObject()
+    {
+        // If the object can be placed and has not already been placed.
+        if(canPlace && !isPlaced)
+        {
+            isPlaced = true;
+        }
+        // TODO: If object cannot be placed - give the player some form of notification that the object
+        // cannot be placed there.
     }
 }
