@@ -13,7 +13,7 @@ public class Placeable : MonoBehaviour
     /// <summary> Object can be placed colour </summary>
     public Color customGreen = new Color(.46f, .89f, .38f, .5f);
     /// <summary> Object cannot be placed colour </summary>
-    public Color customRed = new Color(.84f, .07f, .07f, .85f);
+    public Color customRed = new Color(1f, .8f, .64f, .5f);
     /// <summary> Determines whether the object has already been palced </summary>
     bool isPlaced = false;
     int floorMask;
@@ -28,7 +28,8 @@ public class Placeable : MonoBehaviour
         rend = GetComponent<Renderer>();
         matInitColour = rend.material.color;
 
-        // TODO: CHANGE RENDERING MODE TO TRANSPARENT
+        // Change to the custom transparent shader
+        rend.material.shader = Shader.Find("Custom/TransparentShader");
 
         // Change the material colour to green to show the object is yet to be placed
         rend.material.color = customGreen;
@@ -118,7 +119,8 @@ public class Placeable : MonoBehaviour
         {
             // Change object back to its original material colour
             rend.material.color = matInitColour;
-            // TODO: CHANGE RENDERING MODE BACK TO OPAQUE
+            // Change back to Unity's standard shader
+            rend.material.shader = Shader.Find("Standard");
             isPlaced = true;
         }
         // TODO: If object cannot be placed - give the player some form of audio notification that the object
