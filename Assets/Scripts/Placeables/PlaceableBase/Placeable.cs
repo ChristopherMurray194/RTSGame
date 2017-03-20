@@ -20,6 +20,9 @@ public class Placeable : MonoBehaviour
 
 	void Awake ()
     {
+        AddRigidBody();
+        AddBoxCollider();
+
         floorMask = LayerMask.GetMask("Floor"); // Get the mask from the Floor layer
         
         renderer = GetComponent<Renderer>();
@@ -29,10 +32,6 @@ public class Placeable : MonoBehaviour
 
         // Change the material colour to green to show the object is yet to be placed
         renderer.material.color = customGreen;
-
-        // Check that the object actually has a collider. Otherwise the collision checks are redundant.
-        Collider colliderCheck = GetComponent<Collider>();
-        if (colliderCheck == null) Debug.LogError("You forgot to add a collider to " + gameObject.name);
     }
 
 	void Update ()
@@ -44,6 +43,28 @@ public class Placeable : MonoBehaviour
         if (!isPlaced)
             DeterminePosition();
 	}
+
+    /// <summary>
+    /// Adds a rigid body to the game object so that collision detection functions.
+    /// </summary>
+    void AddRigidBody()
+    {
+        gameObject.AddComponent<Rigidbody>();
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.useGravity = false;
+        // We don't care about applying any physics to placeable objects
+        rb.isKinematic = true;
+    }
+
+    /// <summary>
+    /// Adds a box collider to the game object
+    /// </summary>
+    void AddBoxCollider()
+    {
+        gameObject.AddComponent<BoxCollider>();
+        BoxCollider bc = GetComponent<BoxCollider>();
+        bc.isTrigger = true;
+    }
 
     /// <summary>
     /// Handles the logic for moving the object based on the mouse position.
