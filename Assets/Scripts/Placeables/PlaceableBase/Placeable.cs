@@ -8,7 +8,7 @@ public class Placeable : MonoBehaviour
     public float yOffset = 0.11f;
     /// <summary> Can the object be placed at its current position? </summary>
     bool canPlace = true;
-    Renderer renderer;
+    Renderer rend;
     Color matInitColour;
     /// <summary> Object can be placed colour </summary>
     public Color customGreen = new Color(.46f, .89f, .38f, .5f);
@@ -25,13 +25,13 @@ public class Placeable : MonoBehaviour
 
         floorMask = LayerMask.GetMask("Floor"); // Get the mask from the Floor layer
         
-        renderer = GetComponent<Renderer>();
-        matInitColour = renderer.material.color;
+        rend = GetComponent<Renderer>();
+        matInitColour = rend.material.color;
 
         // TODO: CHANGE RENDERING MODE TO TRANSPARENT
 
         // Change the material colour to green to show the object is yet to be placed
-        renderer.material.color = customGreen;
+        rend.material.color = customGreen;
     }
 
 	void Update ()
@@ -74,7 +74,7 @@ public class Placeable : MonoBehaviour
         // Cast a ray from the main camera to the mouse position
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit floorHit;
-        if(Physics.Raycast(camRay, out floorHit, 100f, floorMask))
+        if(Physics.Raycast(camRay, out floorHit, 1000f, floorMask))
         {
             Vector3 pos = transform.position;
             // The placeable object's position is the mouse's position relative to the floor
@@ -96,7 +96,7 @@ public class Placeable : MonoBehaviour
         canPlace = false;
 
         // Switch the material colour to red to notify the player object cannot be placed
-        renderer.material.color = customRed;
+        rend.material.color = customRed;
     }
 
     void OnTriggerExit(Collider other)
@@ -105,7 +105,7 @@ public class Placeable : MonoBehaviour
         canPlace = true;
 
         // Revert the plane back to its original colour
-        renderer.material.color = customGreen;
+        rend.material.color = customGreen;
     }
 
     /// <summary>
@@ -117,7 +117,7 @@ public class Placeable : MonoBehaviour
         if(canPlace && !isPlaced)
         {
             // Change object back to its original material colour
-            renderer.material.color = matInitColour;
+            rend.material.color = matInitColour;
             // TODO: CHANGE RENDERING MODE BACK TO OPAQUE
             isPlaced = true;
         }
