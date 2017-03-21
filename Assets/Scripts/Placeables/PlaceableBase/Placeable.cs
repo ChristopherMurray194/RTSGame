@@ -126,7 +126,7 @@ public class Placeable : MonoBehaviour
     void PlaceObject()
     {
         // If the object can be placed and has not already been placed.
-        if(canPlace && !isPlaced)
+        if(canPlace)
         {
             // Change object back to its original material colour
             rend.material.color = matInitColour;
@@ -134,6 +134,8 @@ public class Placeable : MonoBehaviour
             rend.material.shader = Shader.Find("Standard");
             gameObject.isStatic = true;
             isPlaced = true;
+            // Object has been placed disable this script!
+            this.enabled = false;
         }
         // TODO: If object cannot be placed - give the player some form of audio notification that the object
         // cannot be placed there.
