@@ -40,6 +40,9 @@ public class Placeable : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) // 0 for left mouse button
             PlaceObject();
 
+        if (Input.GetKeyDown(KeyCode.R))
+            Rotate();
+
         // If the object has not already been placed then we can place move it.
         if (!isPlaced)
             DeterminePosition();
@@ -107,6 +110,14 @@ public class Placeable : MonoBehaviour
 
         // Revert the plane back to its original colour
         rend.material.color = customGreen;
+    }
+
+    /// <summary>
+    /// Rotate the object 90 degrees.
+    /// </summary>
+    void Rotate()
+    {
+        transform.Rotate(new Vector3(0f, 1f, 0f), 90f, Space.Self);
     }
 
     /// <summary>
