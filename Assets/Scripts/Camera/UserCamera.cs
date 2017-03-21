@@ -9,6 +9,9 @@ public class UserCamera : MonoBehaviour
     /// <summary> Camera rotation speed </summary>
     public float rotationSpeed = 4.0f;
 
+    /// <summary> Maximum distance camera can zoom (px) </summary>
+    public float maxZoom = 30.0f;
+
     int floorMask;
     Camera cam;
     /// <summary> Default height of the camera </summary>
@@ -74,12 +77,7 @@ public class UserCamera : MonoBehaviour
     /// <param name="r"> Rotation direction defined by user input; Clockwise if 1, Counter-clockwise if -1 </param>
     void Yaw(float r)
     {
-        // Cast a ray from the main camera to the mouse position
-        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit floorHit;
-        Vector3 pos = transform.position;
-        if (Physics.Raycast(camRay, out floorHit, 1000f, floorMask))
-            pos = floorHit.point;
+        Vector3 pos = mousePosRayCast();
         // Rotate around the point the ray intersects 
         transform.RotateAround(pos, new Vector3(0f, 1f, 0f), (r * rotationSpeed));
     }
@@ -102,6 +100,8 @@ public class UserCamera : MonoBehaviour
             scrollVec.y++;
             scrollVec.z--;
         }
+        scrollVec.y = Mathf.Clamp(scrollVec.y, -maxZoom, maxZoom);
+        scrollVec.z = Mathf.Clamp(scrollVec.z, -maxZoom, maxZoom);
         cam.transform.localPosition = scrollVec;
     }
 
@@ -111,5 +111,23 @@ public class UserCamera : MonoBehaviour
     void resetZoom()
     {
         cam.transform.localPosition = Vector3.zero;
+    }
+
+    /// <summary>
+    /// Cast a ray from the camera to the mouse position and return 
+    /// the point that ray intersects with a game object that is on the
+    /// Floor layer.
+    /// </summary>
+    /// <returns> The intersection point of the ray </returns>
+    Vector3 mousePosRayCast()
+    {
+        // Cast a ray from the main camera to the mouse position
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit floorHit;
+        Vector3 pos = transform.position;
+        if (Physics.Raycast(camRay, out floorHit, 1000f, floorMask))
+            pos = floorHit.point;
+
+        return pos;
     }
 }
