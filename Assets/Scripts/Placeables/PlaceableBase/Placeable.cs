@@ -121,7 +121,6 @@ public class Placeable : MonoBehaviour
             rend.material.color = matInitColour;
             // Change back to Unity's standard shader
             rend.material.shader = Shader.Find("Standard");
-            // Make the object a static gameobject
             gameObject.isStatic = true;
             isPlaced = true;
         }

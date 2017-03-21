@@ -5,21 +5,23 @@ using UnityEngine;
 public class UserCamera : MonoBehaviour
 {
     /// <summary> Camera movement speed </summary>
-    public float movementSpeed = 2.0f;
+    public float movementSpeed = 100.0f;
     /// <summary> Camera rotation speed </summary>
     public float rotationSpeed = 4.0f;
 
+    int floorMask;
+    Camera cam;
+    /// <summary> Default height of the camera </summary>
+    public Vector3 defaultCamHeight;
+
     void Start()
     {
-
+        floorMask = LayerMask.GetMask("Floor"); // Get the mask from the Floor layer
+        cam = GetComponentInChildren<Camera>();
+        defaultCamHeight = transform.position;
     }
 
     void Update()
-    {
-
-    }
-
-    void FixedUpdate()
     {
         // Get inputs
         // The value will be in the range -1...1. For keyboard input this will either be -1, 0, 1
@@ -42,6 +44,14 @@ public class UserCamera : MonoBehaviour
         else r = 0f;
         // Apply yaw rotation
         Yaw(r);
+
+        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+        // Get mouse scroll wheel input to zoom
+        if(scrollInput != 0)
+            Zoom(scrollInput);
+
+        if(Input.GetMouseButtonDown(2))
+            resetZoom();
     }
 
     /// <summary>
@@ -64,6 +74,42 @@ public class UserCamera : MonoBehaviour
     /// <param name="r"> Rotation direction defined by user input; Clockwise if 1, Counter-clockwise if -1 </param>
     void Yaw(float r)
     {
-        transform.Rotate(0f, (r * rotationSpeed), 0f, Space.World);
+        // Cast a ray from the main camera to the mouse position
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit floorHit;
+        Vector3 pos = transform.position;
+        if (Physics.Raycast(camRay, out floorHit, 1000f, floorMask))
+            pos = floorHit.point;
+        // Rotate around the point the ray intersects 
+        transform.RotateAround(pos, new Vector3(0f, 1f, 0f), (r * rotationSpeed));
+    }
+
+    /// <summary>
+    /// Zooms the camera using the mouse scroll wheel.
+    /// Mouse ScrollDelta is: .1 if forward on wheel, -.1 if back on wheel, 0 if no scroll.
+    /// </summary>
+    /// <param name="scrollDelta"> Value of the mouse scroll wheel delta </param>
+    void Zoom(float scrollDelta)
+    {
+        Vector3 scrollVec = cam.transform.localPosition;
+        if (scrollDelta > 0)
+        {
+            scrollVec.y--;
+            scrollVec.z++;
+        }
+        else if (scrollDelta < 0)
+        {
+            scrollVec.y++;
+            scrollVec.z--;
+        }
+        cam.transform.localPosition = scrollVec;
+    }
+
+    /// <summary>
+    /// When the middle mouse button is clicked, the camera zoom resets
+    /// </summary>
+    void resetZoom()
+    {
+        cam.transform.localPosition = Vector3.zero;
     }
 }
