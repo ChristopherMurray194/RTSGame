@@ -77,7 +77,7 @@ public class UserCamera : MonoBehaviour
     /// <param name="r"> Rotation direction defined by user input; Clockwise if 1, Counter-clockwise if -1 </param>
     void Yaw(float r)
     {
-        Vector3 pos = mousePosRayCast();
+        Vector3 pos = cameraCenterRayCast();
         // Rotate around the point the ray intersects 
         transform.RotateAround(pos, new Vector3(0f, 1f, 0f), (r * rotationSpeed));
     }
@@ -114,15 +114,15 @@ public class UserCamera : MonoBehaviour
     }
 
     /// <summary>
-    /// Cast a ray from the camera to the mouse position and return 
+    /// Cast a ray from the center of the camera and returns
     /// the point that ray intersects with a game object that is on the
     /// Floor layer.
     /// </summary>
     /// <returns> The intersection point of the ray </returns>
-    Vector3 mousePosRayCast()
+    Vector3 cameraCenterRayCast()
     {
         // Cast a ray from the main camera to the mouse position
-        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray camRay = cam.ScreenPointToRay(new Vector3(cam.pixelWidth/2, cam.pixelHeight/2, 0f));
         RaycastHit floorHit;
         Vector3 pos = transform.position;
         if (Physics.Raycast(camRay, out floorHit, 1000f, floorMask))
