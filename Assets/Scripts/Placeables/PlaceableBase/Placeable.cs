@@ -6,14 +6,15 @@ public class Placeable : MonoBehaviour
 {
     /// <summary> The offset which the object needs to be to be level with the floor </summary>
     public float yOffset = 0.11f;
+    public int snapValue = 5;
     /// <summary> Can the object be placed at its current position? </summary>
     bool canPlace = true;
     Renderer rend;
     Color matInitColour;
     /// <summary> Object can be placed colour </summary>
-    public Color customGreen = new Color(.46f, .89f, .38f, .5f);
+    Color customGreen = new Color(.46f, .89f, .38f, .5f);
     /// <summary> Object cannot be placed colour </summary>
-    public Color customRed = new Color(1f, .8f, .64f, .5f);
+    Color customRed = new Color(1f, .8f, .64f, .5f);
     /// <summary> Determines whether the object has already been palced </summary>
     bool isPlaced = false;
     int floorMask;
@@ -78,14 +79,27 @@ public class Placeable : MonoBehaviour
         // Cast a ray from the main camera to the mouse position
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit floorHit;
-        if(Physics.Raycast(camRay, out floorHit, 1000f, floorMask))
+        Vector3 pos = transform.position;
+        if (Physics.Raycast(camRay, out floorHit, 1000f, floorMask))
         {
-            Vector3 pos = transform.position;
             // The placeable object's position is the mouse's position relative to the floor
             pos = floorHit.point;
             pos.y += yOffset;
-            transform.position = pos;
         }
+        // snap the object
+        pos.x = snapRound(pos.x);
+        pos.z = snapRound(pos.z);
+        transform.position = pos;
+    }
+
+    /// <summary>
+    /// Rounds the input to the nearest multiple of snapValue.
+    /// </summary>
+    /// <param name="inVal"></param>
+    /// <returns></returns>
+    float snapRound(float inVal)
+    {
+        return snapValue * (Mathf.Round(inVal / snapValue));
     }
 
     void OnTriggerStay(Collider other)
