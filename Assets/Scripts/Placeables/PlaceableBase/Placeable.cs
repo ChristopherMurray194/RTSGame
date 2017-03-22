@@ -12,14 +12,14 @@ public class Placeable : MonoBehaviour
     Renderer rend;
     Color matInitColour;
     /// <summary> Object can be placed colour </summary>
-    Color customGreen = new Color(.46f, .89f, .38f, .5f);
+    Color customGreen = new Color(.46f, .89f, .38f, .3f);
     /// <summary> Object cannot be placed colour </summary>
-    Color customRed = new Color(1f, .8f, .64f, .5f);
+    Color customRed = new Color(1f, .8f, .64f, .3f);
     /// <summary> Determines whether the object has already been palced </summary>
     bool isPlaced = false;
     int floorMask;
 
-	void Awake ()
+	void Awake()
     {
         AddRigidBody();
         AddBoxCollider();
@@ -36,7 +36,7 @@ public class Placeable : MonoBehaviour
         rend.material.color = customGreen;
     }
 
-	void Update ()
+	void Update()
     {
         if (Input.GetMouseButtonDown(0)) // 0 for left mouse button
             PlaceObject();
@@ -80,15 +80,23 @@ public class Placeable : MonoBehaviour
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit floorHit;
         Vector3 pos = transform.position;
+
         if (Physics.Raycast(camRay, out floorHit, 1000f, floorMask))
         {
             // The placeable object's position is the mouse's position relative to the floor
             pos = floorHit.point;
             pos.y += yOffset;
         }
-        // snap the object
-        pos.x = snapRound(pos.x);
-        pos.z = snapRound(pos.z);
+
+        // Only snap position if the camera is not being moved. I don't like the juddering effect caused.
+        if ((Input.GetAxisRaw("Horizontal") == 0)
+            && (Input.GetAxisRaw("Vertical") == 0))
+        {
+            // snap the object
+            pos.x = snapRound(pos.x);
+            pos.z = snapRound(pos.z);
+        }
+
         transform.position = pos;
     }
 
