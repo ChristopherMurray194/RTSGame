@@ -2,9 +2,6 @@ Library/**
 Build/**
 Temp/**
 
-Assets/SimpleTownLite/**
-Assets/SimpleTownLite.meta
-
 *.csproj
 *.sln
 .vs/**

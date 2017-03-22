@@ -19,7 +19,7 @@ public class Placeable : MonoBehaviour
     bool isPlaced = false;
     int floorMask;
 
-	void Awake()
+    void Awake()
     {
         AddRigidBody();
         AddBoxCollider();
@@ -36,7 +36,7 @@ public class Placeable : MonoBehaviour
         rend.material.color = customGreen;
     }
 
-	void Update()
+    void Update()
     {
         if (Input.GetMouseButtonDown(0)) // 0 for left mouse button
             PlaceObject();
