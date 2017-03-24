@@ -7,9 +7,11 @@ public class SpawnPlaceable : MonoBehaviour
     /// <summary> The placeable object to spawn </summary>
     public GameObject placeable;
 
+    PlaceableManager objMgrScript;
+
 	void Start ()
     {
-	    	
+        objMgrScript = GameObject.Find("PlaceableManager").GetComponent<PlaceableManager>();
 	}
 	
 	void Update ()
@@ -22,7 +24,14 @@ public class SpawnPlaceable : MonoBehaviour
     /// </summary>
     public void SpawnObject()
     {
-        Instantiate(placeable);
+        if (objMgrScript.CheckCanSpawn(placeable))
+        {
+            Instantiate(placeable);
+            // Number of pizza shops in the scene has increased
+            objMgrScript.PizzaShopCount++;
+            // A placeable object has been spawned and has yet to be placed
+            objMgrScript.CanSpawn = false;
+        }
     }
 
 }
