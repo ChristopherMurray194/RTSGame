@@ -114,26 +114,33 @@ public class Placeable : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        /*
-         * NOTE: If the collider is always triggered, ensure parent of the plane object does not have
-         * a collider active as it may be colliding with the parent object/building already inside 
-         * the collider.
-         */
+        if (this.enabled)
+        {
+            /*
+             * NOTE: If the collider is always triggered, ensure parent of the plane object does not have
+             * a collider active as it may be colliding with the parent object/building already inside 
+             * the collider.
+             */
 
-        // We cannot place there.
-        canPlace = false;
+            // We cannot place there.
+            canPlace = false;
 
-        // Switch the material colour to red to notify the player object cannot be placed
-        rend.material.color = customRed;
+            // Switch the material to red to notify the player object cannot be placed
+            rend.material.color = customRed;
+
+        }
     }
 
     void OnTriggerExit(Collider other)
     {
-        // We can place the object again
-        canPlace = true;
+        if (this.enabled)
+        {
+            // We can place the object again
+            canPlace = true;
 
-        // Revert the plane back to its original colour
-        rend.material.color = customGreen;
+            // Revert the material back to green to show the player the object is able to be placed
+            rend.material.color = customGreen;
+        }
     }
 
     /// <summary>
@@ -158,7 +165,7 @@ public class Placeable : MonoBehaviour
             rend.material.shader = Shader.Find("Standard");
             gameObject.isStatic = true;
             isPlaced = true;
-            // Object has been placed a new placeable can be spawned
+            // Object has been placed, a new placeable can be spawned
             placeableMgrScript.CanSpawn = true;
             // Object has been placed disable this script!
             this.enabled = false;
