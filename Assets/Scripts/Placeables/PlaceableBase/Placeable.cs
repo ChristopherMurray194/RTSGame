@@ -18,7 +18,6 @@ public class Placeable : MonoBehaviour
     /// <summary> Determines whether the object has already been palced </summary>
     bool isPlaced = false;
     int floorMask;
-    PlaceableManager placeableMgrScript;
 
     void Awake()
     {
@@ -26,7 +25,6 @@ public class Placeable : MonoBehaviour
         AddBoxCollider();
 
         floorMask = LayerMask.GetMask("Floor"); // Get the mask from the Floor layer
-        placeableMgrScript = GameObject.Find("PlaceableManager").GetComponent<PlaceableManager>();
 
         rend = GetComponent<Renderer>();
         matInitColour = rend.material.color;
@@ -166,6 +164,7 @@ public class Placeable : MonoBehaviour
             gameObject.isStatic = true;
             isPlaced = true;
             // Object has been placed, a new placeable can be spawned
+            PlaceableManager placeableMgrScript = GameObject.Find("PlaceableManager").GetComponent<PlaceableManager>();
             placeableMgrScript.CanSpawn = true;
             // Object has been placed disable this script!
             this.enabled = false;
