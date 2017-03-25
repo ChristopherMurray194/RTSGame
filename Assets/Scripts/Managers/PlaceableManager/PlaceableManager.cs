@@ -42,11 +42,12 @@ public class PlaceableManager : MonoBehaviour
     /// <param name="obj"> Placeable object to spawn </param>
     public bool CheckCanSpawn(GameObject obj)
     {
+        bool capReached = false;
         // TODO: Player will need to be notified the spawn cap has been reached
         for (int i = 0; i < spawnableItems.Count; i++)
         if (obj.name.Equals(spawnableItems[i].Name))
-            canSpawn = spawnableItems[i].isCapNotReached();
+            capReached = spawnableItems[i].isCapReached();
 
-        return (canSpawn) ? true : false;
+        return (canSpawn && !capReached) ? true : false;
     }
 }

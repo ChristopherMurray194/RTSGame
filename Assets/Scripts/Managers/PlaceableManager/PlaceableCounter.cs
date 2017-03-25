@@ -42,12 +42,12 @@ public class PlaceableCounter
     }
 
     /// <summary>
-    /// Returns true if the maximum number of instances in the scene has not been reached.
+    /// Returns true if the maximum number of instances in the scene has been reached.
     /// </summary>
-    public bool isCapNotReached()
+    public bool isCapReached()
     {
         if (pCount >= pCap)
-            return false;
-        return true;
+            return true;
+        return false;
     }
 }
