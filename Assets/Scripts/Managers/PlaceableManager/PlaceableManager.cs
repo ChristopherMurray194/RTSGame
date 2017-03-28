@@ -26,7 +26,7 @@ public class PlaceableManager : MonoBehaviour
 	}
 
     /// <summary>
-    /// Increments the pCount count for the struct with the same name as obj.
+    /// Increments the pCount count for the PlaceableCounter with the same name as obj.
     /// </summary>
     /// <param name="obj"> Placeable object to spawn </param>
     public void IncrementObjCount(GameObject obj)
@@ -34,6 +34,20 @@ public class PlaceableManager : MonoBehaviour
         for (int i = 0; i < spawnableItems.Count; i++)
             if (obj.name.Equals(spawnableItems[i].Name))
                 spawnableItems[i].PCount++;
+    }
+
+    /// <summary>
+    /// Decrements the pCount for the PlaceableCounter with the same name as obj.
+    /// </summary>
+    /// <param name="obj"> Placeable object which has been removed </param>
+    public void DecrementObjCount(GameObject obj)
+    {
+        // Remove '(Clone)' from the GameObject name
+        string objName = obj.name.Remove(obj.name.IndexOf('(', 7));
+
+        for (int i = 0; i < spawnableItems.Count; i++)
+            if (objName.Equals(spawnableItems[i].Name))
+                spawnableItems[i].PCount--;
     }
 
     /// <summary>

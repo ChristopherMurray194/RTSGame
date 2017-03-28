@@ -46,8 +46,15 @@ public class Placeable : MonoBehaviour
 
         // If the object has not already been placed then we can place move it.
         if (!isPlaced)
-            DeterminePosition();
-	}
+        {
+            if (Input.GetMouseButtonDown(1)) // 1 for right mouse button
+                Deselect();
+
+            // If the game object and therefore this script have not been destroyed
+            if (this != null)
+                DeterminePosition();
+        }
+    }
 
     /// <summary>
     /// Adds a rigid body to the game object so that collision detection functions.
@@ -155,7 +162,7 @@ public class Placeable : MonoBehaviour
     void PlaceObject()
     {
         // If the object can be placed and has not already been placed.
-        if(canPlace)
+        if (canPlace)
         {
             // Change object back to its original material colour
             rend.material.color = matInitColour;
@@ -171,5 +178,18 @@ public class Placeable : MonoBehaviour
         }
         // TODO: If object cannot be placed - give the player some form of audio notification that the object
         // cannot be placed there.
+    }
+
+    /// <summary>
+    /// This object is no longer going to be placed, destroy it.
+    /// </summary>
+    void Deselect()
+    {
+        PlaceableManager placeableMgrScript = GameObject.Find("PlaceableManager").GetComponent<PlaceableManager>();
+        // Notifiy the manager that a new placeable object can be spawned in place of this one, as we are about to destroy it
+        placeableMgrScript.CanSpawn = true;
+        // Decrement the count of 'gameObjects' in the scene
+        placeableMgrScript.DecrementObjCount(gameObject);
+        GameObject.Destroy(gameObject);
     }
 }
