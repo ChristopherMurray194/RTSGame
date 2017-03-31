@@ -31,8 +31,11 @@ public class PlaceableManager : MonoBehaviour
     /// <param name="obj"> Placeable object to spawn </param>
     public void IncrementObjCount(GameObject obj)
     {
+        // Remove '(Clone)' from the GameObject name
+        string objName = obj.name.Remove(obj.name.IndexOf('(', 7));
+
         for (int i = 0; i < spawnableItems.Count; i++)
-            if (obj.name.Equals(spawnableItems[i].Name))
+            if (objName.Equals(spawnableItems[i].Name))
                 spawnableItems[i].PCount++;
     }
 
@@ -51,7 +54,7 @@ public class PlaceableManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Check whether we can spawn the obj.
+    /// Check whether obj can be spawned. It cannot if its spawn cap has been reached.
     /// </summary>
     /// <param name="obj"> Placeable object to spawn </param>
     public bool CheckCanSpawn(GameObject obj)

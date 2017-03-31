@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Placeable : MonoBehaviour
 {
-    /// <summary> The offset which the object needs to be to be level with the floor </summary>
+    /// <summary> Slight Y axis offset to avoid collisions with the floor </summary>
     public float yOffset = 0.11f;
     public int snapValue = 5;
     /// <summary> Can the object be placed at its current position? </summary>
@@ -15,9 +15,10 @@ public class Placeable : MonoBehaviour
     Color customGreen = new Color(.46f, .89f, .38f, .3f);
     /// <summary> Object cannot be placed colour </summary>
     Color customRed = new Color(1f, .8f, .64f, .3f);
-    /// <summary> Determines whether the object has already been palced </summary>
+    /// <summary> Determines whether the object has already been placed </summary>
     bool isPlaced = false;
     int floorMask;
+    PlaceableManager placeableMgrScript;
 
     void Awake()
     {
@@ -25,9 +26,14 @@ public class Placeable : MonoBehaviour
         AddBoxCollider();
 
         floorMask = LayerMask.GetMask("Floor"); // Get the mask from the Floor layer
-
         rend = GetComponent<Renderer>();
         matInitColour = rend.material.color;
+
+        placeableMgrScript = GameObject.Find("PlaceableManager").GetComponent<PlaceableManager>();
+        // Number of this placeable type in the scene has increased
+        placeableMgrScript.IncrementObjCount(gameObject);
+        // Notify the manager that this object has yet to be placed, so no new placeable objects can be spawned
+        placeableMgrScript.CanSpawn = false;
 
         // Change to the custom transparent shader
         rend.material.shader = Shader.Find("Custom/TransparentShader");
@@ -121,12 +127,6 @@ public class Placeable : MonoBehaviour
     {
         if (this.enabled)
         {
-            /*
-             * NOTE: If the collider is always triggered, ensure parent of the plane object does not have
-             * a collider active as it may be colliding with the parent object/building already inside 
-             * the collider.
-             */
-
             // We cannot place there.
             canPlace = false;
 
@@ -171,7 +171,6 @@ public class Placeable : MonoBehaviour
             gameObject.isStatic = true;
             isPlaced = true;
             // Object has been placed, a new placeable can be spawned
-            PlaceableManager placeableMgrScript = GameObject.Find("PlaceableManager").GetComponent<PlaceableManager>();
             placeableMgrScript.CanSpawn = true;
             // Object has been placed disable this script!
             this.enabled = false;
@@ -185,10 +184,10 @@ public class Placeable : MonoBehaviour
     /// </summary>
     void Deselect()
     {
-        PlaceableManager placeableMgrScript = GameObject.Find("PlaceableManager").GetComponent<PlaceableManager>();
         // Notifiy the manager that a new placeable object can be spawned in place of this one, as we are about to destroy it
         placeableMgrScript.CanSpawn = true;
-        // Decrement the count of 'gameObjects' in the scene
+        /*  Decrement the count of placeable gameObject types in the scene. i.e. If we have a placeable gameObject named 'House',
+            this would decrement the count of Houses in the scene. */
         placeableMgrScript.DecrementObjCount(gameObject);
         GameObject.Destroy(gameObject);
     }

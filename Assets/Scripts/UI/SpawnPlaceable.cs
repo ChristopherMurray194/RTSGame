@@ -27,11 +27,8 @@ public class SpawnPlaceable : MonoBehaviour
         if (objMgrScript.CheckCanSpawn(placeable))
         {
             Instantiate(placeable);
-            // Number of pizza shops in the scene has increased
-            objMgrScript.IncrementObjCount(placeable);
-            // A placeable object has been spawned and has yet to be placed
-            objMgrScript.CanSpawn = false;
         }
+        // TODO: If it cannot be spawned notify the user why not.
     }
 
 }
