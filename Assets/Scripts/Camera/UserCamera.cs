@@ -92,11 +92,13 @@ public class UserCamera : MonoBehaviour
         Vector3 scrollVec = cam.transform.localPosition;
         if (scrollDelta > 0)
         {
+			/* Zoom in */
             scrollVec.y--;
             scrollVec.z++;
         }
         else if (scrollDelta < 0)
         {
+			/* Zoom Out */
             scrollVec.y++;
             scrollVec.z--;
         }
