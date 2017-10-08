@@ -6,6 +6,8 @@ public class Placeable : MonoBehaviour
 {
     /// <summary> Slight Y axis offset to avoid collisions with the floor </summary>
     public float yOffset = 0.11f;
+    /// <summary> Time it takes to 'build' the object - essentially how long it takes to rise up from the ground </summary>
+    public float buildTime = 2.0f;
     public int snapValue = 5;
     /// <summary> Can the object be placed at its current position? </summary>
     bool canPlace = true;
@@ -50,7 +52,7 @@ public class Placeable : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
             Rotate();
 
-        // If the object has not already been placed then we can place move it.
+        // If the object has not already been placed then we can move it.
         if (!isPlaced)
         {
             if (Input.GetMouseButtonDown(1)) // 1 for right mouse button
@@ -168,15 +170,39 @@ public class Placeable : MonoBehaviour
             rend.material.color = matInitColour;
             // Change back to Unity's standard shader
             rend.material.shader = Shader.Find("Standard");
-            gameObject.isStatic = true;
             isPlaced = true;
             // Object has been placed, a new placeable can be spawned
             placeableMgrScript.CanSpawn = true;
+
+            // Make the object rise from the ground
+            StartCoroutine(Rise());
+            gameObject.isStatic = true;
             // Object has been placed disable this script!
             this.enabled = false;
         }
         // TODO: If object cannot be placed - give the player some form of audio notification that the object
         // cannot be placed there.
+    }
+
+    /// <summary>
+    /// A coroutine which rises the object from the ground.
+    /// </summary>
+    IEnumerator Rise()
+    {
+        // Get the height of the object's mesh
+        float objectHeight = GetComponent<MeshRenderer>().bounds.size.y;
+        // Move the object below the floor
+        transform.Translate(new Vector3(0f, (transform.position.y - objectHeight), 0f));
+        float counter = 0f;
+
+        // If the buildTime in seconds has not passed
+        while (counter < buildTime)
+        {
+            counter += Time.deltaTime;
+            // Translate the object on the Y axis by the object's height / buildTime
+            transform.Translate(new Vector3(0, (objectHeight/buildTime) * Time.deltaTime, 0));
+            yield return null;
+        }
     }
 
     /// <summary>
