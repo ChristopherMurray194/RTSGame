@@ -254,48 +254,18 @@ public class Placeable : MonoBehaviour
     /// </summary>
     IEnumerator Rise()
     {
-        // Get the height of the object's mesh
-        float objectHeight = GetObjectHeight();
-    
         // Move the object below the floor
-        transform.Translate(new Vector3(0f, (transform.position.y - (objectHeight + yOffset)), 0f));
+        transform.Translate(new Vector3(0f, (transform.position.y - (yOffset * 4)), 0f));
         float counter = 0f;
 
         // If the buildTime in seconds has not passed
         while (counter < buildTime)
         {
             counter += Time.deltaTime;
-            // Translate the object on the Y axis by the object's height / buildTime
-            transform.Translate(new Vector3(0, (objectHeight/buildTime) * Time.deltaTime, 0));
+            // Translate the object on the Y axis by the object's yOffset cubed / buildTime
+            transform.Translate(new Vector3(0, (yOffset * 3/buildTime) * Time.deltaTime, 0));
             yield return null;
         }
-    }
-
-    /// <summary>
-    /// Obtain the height of the object or the total height if the object is made up of multiple models.
-    /// </summary>
-    /// <returns> The total height of the object </returns>
-    float GetObjectHeight()
-    {
-        float totalHeight = 0f;
-        // If the game object has a mesh renderer, we assume it consists of only one model
-        if (GetComponent<MeshRenderer>() != null)
-        {
-            totalHeight = GetComponent<MeshRenderer>().bounds.size.y;
-        }
-        else
-        {
-            MeshRenderer[] meshes = GetComponentsInChildren<MeshRenderer>();
-            // Iterate through all mesh filter components in the children of this game object
-                if (meshes != null)
-                    // Obtain the height of each mesh
-                    foreach (MeshRenderer mesh in meshes)
-                    {
-                        totalHeight += mesh.bounds.size.y;
-                    }
-        }
-
-        return totalHeight;
     }
 
     /// <summary>
