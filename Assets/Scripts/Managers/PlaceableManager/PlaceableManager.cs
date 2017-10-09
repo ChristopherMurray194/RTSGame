@@ -17,7 +17,8 @@ public class PlaceableManager : MonoBehaviour
 	void Start ()
     {
         spawnableItems.Add(new PlaceableCounter("Longhouse", 10));
-        spawnableItems.Add(new PlaceableCounter("Apartment", 5));
+        spawnableItems.Add(new PlaceableCounter("Hall", 5));
+        spawnableItems.Add(new PlaceableCounter("Gatehouse", 2));
 	}
 	
 	void Update ()
@@ -32,7 +33,7 @@ public class PlaceableManager : MonoBehaviour
     public void IncrementObjCount(GameObject obj)
     {
         // Remove '(Clone)' from the GameObject name
-        string objName = obj.name.Remove(obj.name.IndexOf('(', 7));
+        string objName = obj.name.Remove(obj.name.IndexOf('('));
 
         for (int i = 0; i < spawnableItems.Count; i++)
             if (objName.Equals(spawnableItems[i].Name))
@@ -46,7 +47,7 @@ public class PlaceableManager : MonoBehaviour
     public void DecrementObjCount(GameObject obj)
     {
         // Remove '(Clone)' from the GameObject name
-        string objName = obj.name.Remove(obj.name.IndexOf('(', 7));
+        string objName = obj.name.Remove(obj.name.IndexOf('('));
 
         for (int i = 0; i < spawnableItems.Count; i++)
             if (objName.Equals(spawnableItems[i].Name))
@@ -62,8 +63,8 @@ public class PlaceableManager : MonoBehaviour
         bool capReached = false;
         // TODO: Player will need to be notified the spawn cap has been reached
         for (int i = 0; i < spawnableItems.Count; i++)
-        if (obj.name.Equals(spawnableItems[i].Name))
-            capReached = spawnableItems[i].isCapReached();
+            if (obj.name.Equals(spawnableItems[i].Name))
+                capReached = spawnableItems[i].isCapReached();
 
         return (canSpawn && !capReached) ? true : false;
     }
