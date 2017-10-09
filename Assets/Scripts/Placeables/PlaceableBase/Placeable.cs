@@ -91,13 +91,29 @@ public class Placeable : MonoBehaviour
     }
 
     /// <summary>
-    /// Adds a box collider to the game object
+    /// Adds a box collider to the game object or its children (those with meshes) 
     /// </summary>
     void AddBoxCollider()
     {
-        gameObject.AddComponent<BoxCollider>();
-        BoxCollider bc = GetComponent<BoxCollider>();
-        bc.isTrigger = true;
+        // If this game object has a mesh - then I am assuming it has NO children with meshes
+        if (GetComponent<MeshFilter>() != null)
+        {
+            gameObject.AddComponent<BoxCollider>();
+            BoxCollider bc = GetComponent<BoxCollider>();
+            bc.isTrigger = true;
+        }
+        else
+        {
+            // Find all children with a mesh
+            Component[] children = GetComponentsInChildren<MeshFilter>();
+            foreach(Component child in children)
+            {
+                // Add a box collider to each game object
+                child.gameObject.AddComponent<BoxCollider>();
+                BoxCollider bc = child.gameObject.GetComponent<BoxCollider>();
+                bc.isTrigger = true;
+            }
+        }
     }
 
     /// <summary>
