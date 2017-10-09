@@ -4,6 +4,8 @@ Temp/**
 
 Assets/SimpleTownLite/**
 Assets/SimpleTownLite.meta
+Assets/PolygonVikings/**
+Assets/PolygonVikings.meta
 
 *.csproj
 *.sln

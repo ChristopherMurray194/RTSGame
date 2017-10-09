@@ -11,8 +11,10 @@ public class Placeable : MonoBehaviour
     public int snapValue = 5;
     /// <summary> Can the object be placed at its current position? </summary>
     bool canPlace = true;
-    Renderer rend;
-    Color matInitColour;
+    /// <summary> List of renderers found in children </summary>
+    List<Renderer> renderers = new List<Renderer>();
+    /// <summary> List of intial material colours found in children </summary>
+    List<Color> matInitColours = new List<Color>();
     /// <summary> Object can be placed colour </summary>
     Color customGreen = new Color(.46f, .89f, .38f, .3f);
     /// <summary> Object cannot be placed colour </summary>
@@ -28,20 +30,32 @@ public class Placeable : MonoBehaviour
         AddBoxCollider();
 
         floorMask = LayerMask.GetMask("Floor"); // Get the mask from the Floor layer
-        rend = GetComponent<Renderer>();
-        matInitColour = rend.material.color;
-
+        
         placeableMgrScript = GameObject.Find("PlaceableManager").GetComponent<PlaceableManager>();
         // Number of this placeable type in the scene has increased
         placeableMgrScript.IncrementObjCount(gameObject);
         // Notify the manager that this object has yet to be placed, so no new placeable objects can be spawned
         placeableMgrScript.CanSpawn = false;
 
-        // Change to the custom transparent shader
-        rend.material.shader = Shader.Find("Custom/TransparentShader");
+        // If there is a renderer component in the main game object, I assume there is no children
+        if (GetComponent<Renderer>() != null)
+        {
+                renderers.Add(GetComponent<Renderer>());
+        }
+        else
+        {
+            // Obtain the renders from the children
+            Renderer[] tempRenderer = GetComponentsInChildren<Renderer>();
+            if (tempRenderer != null)
+                foreach (Renderer r in tempRenderer)
+                    renderers.Add(r);
+        }
 
-        // Change the material colour to green to show the object is yet to be placed
-        rend.material.color = customGreen;
+        // Add the initial model materials to the list
+        foreach (Renderer r in renderers)
+            matInitColours.Add(r.material.color);
+
+        ApplyCanPlaceShader();
     }
 
     void Update()
@@ -84,6 +98,38 @@ public class Placeable : MonoBehaviour
         gameObject.AddComponent<BoxCollider>();
         BoxCollider bc = GetComponent<BoxCollider>();
         bc.isTrigger = true;
+    }
+
+    /// <summary>
+    /// Applies the custom green shader to the mesh and (if any) all child meshes.
+    /// Which notifies the user the object can be placed.
+    /// </summary>
+    void ApplyCanPlaceShader()
+    {
+        if (renderers != null)
+        {
+            // Change to the custom transparent shader
+            foreach (Renderer r in renderers)
+                r.material.shader = Shader.Find("Custom/TransparentShader");
+        }
+
+        ApplyGreenMaterial();
+    }
+
+    void ApplyGreenMaterial()
+    {
+        if (renderers != null)
+            foreach (Renderer r in renderers)
+                // Change the material colour to green to show the object is yet to be placed
+                r.material.color = customGreen;
+    }
+
+    void ApplyRedMaterial()
+    {
+        if (renderers != null)
+            foreach(Renderer r in renderers)
+                // Switch the material to red to notify the player object cannot be placed
+                r.material.color = customRed;
     }
 
     /// <summary>
@@ -132,8 +178,7 @@ public class Placeable : MonoBehaviour
             // We cannot place there.
             canPlace = false;
 
-            // Switch the material to red to notify the player object cannot be placed
-            rend.material.color = customRed;
+            ApplyRedMaterial();
 
         }
     }
@@ -146,7 +191,7 @@ public class Placeable : MonoBehaviour
             canPlace = true;
 
             // Revert the material back to green to show the player the object is able to be placed
-            rend.material.color = customGreen;
+            ApplyGreenMaterial();
         }
     }
 
@@ -166,10 +211,14 @@ public class Placeable : MonoBehaviour
         // If the object can be placed and has not already been placed.
         if (canPlace)
         {
-            // Change object back to its original material colour
-            rend.material.color = matInitColour;
-            // Change back to Unity's standard shader
-            rend.material.shader = Shader.Find("Standard");
+            // The size of the renderers list AND the matInitColours list SHOULD (I assume) always be the same...
+            for(int i = 0; i < renderers.Count; i++)
+            {
+                // Change object back to its original material colour
+                renderers[i].material.color = matInitColours[i];
+                // Change back to Unity's standard shader
+                renderers[i].material.shader = Shader.Find("Standard");
+            }
             isPlaced = true;
             // Object has been placed, a new placeable can be spawned
             placeableMgrScript.CanSpawn = true;
@@ -190,9 +239,10 @@ public class Placeable : MonoBehaviour
     IEnumerator Rise()
     {
         // Get the height of the object's mesh
-        float objectHeight = GetComponent<MeshRenderer>().bounds.size.y;
+        float objectHeight = GetObjectHeight();
+    
         // Move the object below the floor
-        transform.Translate(new Vector3(0f, (transform.position.y - objectHeight), 0f));
+        transform.Translate(new Vector3(0f, (transform.position.y - (objectHeight + yOffset)), 0f));
         float counter = 0f;
 
         // If the buildTime in seconds has not passed
@@ -203,6 +253,33 @@ public class Placeable : MonoBehaviour
             transform.Translate(new Vector3(0, (objectHeight/buildTime) * Time.deltaTime, 0));
             yield return null;
         }
+    }
+
+    /// <summary>
+    /// Obtain the height of the object or the total height if the object is made up of multiple models.
+    /// </summary>
+    /// <returns> The total height of the object </returns>
+    float GetObjectHeight()
+    {
+        float totalHeight = 0f;
+        // If the game object has a mesh renderer, we assume it consists of only one model
+        if (GetComponent<MeshRenderer>() != null)
+        {
+            totalHeight = GetComponent<MeshRenderer>().bounds.size.y;
+        }
+        else
+        {
+            MeshRenderer[] meshes = GetComponentsInChildren<MeshRenderer>();
+            // Iterate through all mesh filter components in the children of this game object
+                if (meshes != null)
+                    // Obtain the height of each mesh
+                    foreach (MeshRenderer mesh in meshes)
+                    {
+                        totalHeight += mesh.bounds.size.y;
+                    }
+        }
+
+        return totalHeight;
     }
 
     /// <summary>

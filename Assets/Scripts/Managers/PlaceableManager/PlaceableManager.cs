@@ -16,7 +16,7 @@ public class PlaceableManager : MonoBehaviour
 
 	void Start ()
     {
-        spawnableItems.Add(new PlaceableCounter("PizzaShop", 10));
+        spawnableItems.Add(new PlaceableCounter("Longhouse", 10));
         spawnableItems.Add(new PlaceableCounter("Apartment", 5));
 	}
 	
