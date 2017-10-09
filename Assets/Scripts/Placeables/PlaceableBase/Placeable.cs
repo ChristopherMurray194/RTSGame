@@ -24,6 +24,9 @@ public class Placeable : MonoBehaviour
     int floorMask;
     PlaceableManager placeableMgrScript;
 
+    /// <summary> The Y value of the floor hit </summary>
+    float floorY = 0f;
+
     void Awake()
     {
         AddRigidBody();
@@ -163,6 +166,8 @@ public class Placeable : MonoBehaviour
             // The placeable object's position is the mouse's position relative to the floor
             pos = floorHit.point;
             pos.y += yOffset;
+            // Save the Y value of the point where the ray hit
+            floorY = floorHit.point.y;
         }
 
         // Only snap position if the camera is not being moved. I don't like the juddering effect caused.
@@ -255,14 +260,15 @@ public class Placeable : MonoBehaviour
     IEnumerator Rise()
     {
         // Move the object below the floor
-        transform.Translate(new Vector3(0f, (transform.position.y - (yOffset * 4)), 0f));
-        float counter = 0f;
+        transform.Translate(new Vector3(0f, (transform.position.y - (yOffset * 4) - floorY), 0f));
+
+        float timer = 0f;
 
         // If the buildTime in seconds has not passed
-        while (counter < buildTime)
+        while (timer < buildTime)
         {
-            counter += Time.deltaTime;
-            // Translate the object on the Y axis by the object's yOffset cubed / buildTime
+            timer += Time.deltaTime;
+            // Move the object up at increments
             transform.Translate(new Vector3(0, (yOffset * 3/buildTime) * Time.deltaTime, 0));
             yield return null;
         }
