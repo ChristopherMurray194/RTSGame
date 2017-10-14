@@ -19,6 +19,7 @@ public class PlaceableManager : MonoBehaviour
         spawnableItems.Add(new PlaceableCounter("Longhouse", 10));
         spawnableItems.Add(new PlaceableCounter("Hall", 5));
         spawnableItems.Add(new PlaceableCounter("Gatehouse", 2));
+        spawnableItems.Add(new global::PlaceableCounter("Wall", 1000));
 	}
 	
 	void Update ()

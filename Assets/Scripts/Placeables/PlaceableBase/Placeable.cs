@@ -8,7 +8,7 @@ public class Placeable : MonoBehaviour
     public float yOffset = 0.11f;
     /// <summary> Time it takes to 'build' the object - essentially how long it takes to rise up from the ground </summary>
     public float buildTime = 2.0f;
-    public int snapValue = 5;
+    public float snapValue = 5f;
     /// <summary> Can the object be placed at its current position? </summary>
     bool canPlace = true;
     /// <summary> List of renderers found in children </summary>
@@ -104,6 +104,12 @@ public class Placeable : MonoBehaviour
             gameObject.AddComponent<BoxCollider>();
             BoxCollider bc = GetComponent<BoxCollider>();
             bc.isTrigger = true;
+            // Reduce the scale of the collider slightly so placeables can be placed flush with the same type
+            Vector3 scaleVec = bc.size;
+            scaleVec.x = Mathf.Floor(scaleVec.x);
+            scaleVec.y = Mathf.Floor(scaleVec.y);
+            scaleVec.z = Mathf.Floor(scaleVec.z);
+            bc.size = scaleVec;
         }
         else
         {
@@ -115,6 +121,11 @@ public class Placeable : MonoBehaviour
                 child.gameObject.AddComponent<BoxCollider>();
                 BoxCollider bc = child.gameObject.GetComponent<BoxCollider>();
                 bc.isTrigger = true;
+                Vector3 scaleVec = bc.size;
+                scaleVec.x = Mathf.Floor(scaleVec.x);
+                scaleVec.y = Mathf.Floor(scaleVec.y);
+                scaleVec.z = Mathf.Floor(scaleVec.z);
+                bc.size = scaleVec;
             }
         }
     }
@@ -217,7 +228,7 @@ public class Placeable : MonoBehaviour
     }
 
     /// <summary>
-    /// Rotate the object 90 degrees.
+    /// Rotate the placeable object 90 degrees.
     /// </summary>
     void Rotate()
     {
@@ -225,7 +236,7 @@ public class Placeable : MonoBehaviour
     }
 
     /// <summary>
-    /// Finalises the object's position.
+    /// Finalises the placeable object's position.
     /// </summary>
     void PlaceObject()
     {

@@ -12,6 +12,14 @@ public class PlaceableCounter
         set { name = value; }
     }
 
+    private uint pCap;
+    /// <summary> The maximum instances of this placeable gameobject allowed in the scene </summary>
+    public uint PCap
+    {
+        get { return pCap; }
+        set { pCap = value; }
+    }
+
     private int pCount;
     /// <summary> The number of instances of this placeable gameobject currently in the scene </summary>
     public int PCount
@@ -20,21 +28,13 @@ public class PlaceableCounter
         set { pCount = value; }
     }
 
-    private int pCap;
-    /// <summary> The maximum instances of this placeable gameobject allowed in the scene </summary>
-    public int PCap
-    {
-        get { return pCap; }
-        set { pCap = value; }
-    }
-
     /// <summary>
     /// Tracks how many instances of a placeable item with the same name as 'name' are in the scene.
     /// </summary>
     /// <param name="name"> Name of the placeable item </param>
     /// <param name="pCap"> The maximum number of instances which can be in the scene </param>
     /// <param name="pCount"> The current number of instances in the scene </param>
-    public PlaceableCounter(string name, int pCap, int pCount = 0)
+    public PlaceableCounter(string name, uint pCap, int pCount = 0)
     {
         this.name = name;
         this.pCap = pCap;
