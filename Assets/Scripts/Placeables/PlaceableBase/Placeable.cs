@@ -35,7 +35,10 @@ public class Placeable : MonoBehaviour
             AddBoxCollider();
 
         floorMask = LayerMask.GetMask("Floor"); // Get the mask from the Floor layer
-        
+
+        // Remove '(Clone)' from the GameObject name
+        gameObject.name = name.Remove(name.IndexOf('('));
+
         placeableMgrScript = GameObject.Find("PlaceableManager").GetComponent<PlaceableManager>();
         // Number of this placeable type in the scene has increased
         placeableMgrScript.IncrementObjCount(gameObject);
@@ -213,7 +216,6 @@ public class Placeable : MonoBehaviour
             canPlace = false;
 
             ApplyRedMaterial();
-
         }
     }
 
@@ -225,7 +227,7 @@ public class Placeable : MonoBehaviour
             canPlace = true;
 
             // Revert the material back to green to show the player the object is able to be placed
-            ApplyGreenMaterial();
+           ApplyGreenMaterial();
         }
     }
 

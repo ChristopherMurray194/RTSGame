@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Dragable : Placeable
 {
+    public float objectWidth = 3.74f;
     public bool isInitiallyPlaced = false;
     public bool isClone = false;
     // Number of instantiated objects
@@ -27,7 +28,7 @@ public class Dragable : Placeable
         // If the left mouse button is pressed a second time
         else if(Input.GetMouseButtonDown(0) && isInitiallyPlaced)
         {
-            // Finalise the object's position and all subsequently spawned objects
+            FinalisePositions();
         }
 
         if(isInitiallyPlaced && !isClone)
@@ -60,19 +61,21 @@ public class Dragable : Placeable
     /// </summary>
     void InstantiateClones()
     {
-        if (Mathf.Floor(positionToMouse().magnitude / 3.74f) > nInstances)
+        if (placeableMgrScript.CheckCanClone(gameObject))
         {
-            // Create a new instnace of this game object
-            GameObject copy = Instantiate(gameObject);
-            // Ensure all instantiated objects interpret a mouse click as their second mouse click as opposed to the first
-            Dragable script = copy.GetComponent<Dragable>();
-            script.isInitiallyPlaced = true;
-            script.isClone = true;
-            // Add to the list
-            clones.Add(copy);
-            
-            // Number of instances in the scene has increased
-            ++nInstances;
+            if (Mathf.Floor(positionToMouse().magnitude / objectWidth) > nInstances)
+            {
+                // Create a new instnace of this game object
+                GameObject copy = Instantiate(gameObject);
+                // Ensure all instantiated objects interpret a mouse click as their second mouse click as opposed to the first
+                Dragable script = copy.GetComponent<Dragable>();
+                script.isInitiallyPlaced = true;
+                script.isClone = true;
+                // Number of instances in the scene has increased
+                ++nInstances;
+                // Add to the list
+                clones.Add(copy);
+            }
         }
     }
 
@@ -82,10 +85,10 @@ public class Dragable : Placeable
     /// </summary>
     void DetermineClonePos()
     {
-        for(int i = 0; i < nInstances; i++)
+        for (int i = 0; i < nInstances; i++)
         {
             Vector3 temp = clones[i].transform.position;
-            temp.x = gameObject.transform.position.x + -(3.74f * i);
+            temp.x = gameObject.transform.position.x + -(objectWidth * (i + 1));
             clones[i].transform.position = temp;
         }
     }
@@ -96,7 +99,7 @@ public class Dragable : Placeable
     void DestroyClones()
     {
         // Total number of clones that should currently be spawned
-        float numberToSpawn = Mathf.Floor(positionToMouse().magnitude / 3.74f);
+        float numberToSpawn = Mathf.Floor(positionToMouse().magnitude / objectWidth);
         // If the combined width of the clone instances AND this object's width is greater than
         // the length of the vector from this object's position to the mouse's position...
         // we need to remove some clones.
@@ -114,6 +117,19 @@ public class Dragable : Placeable
                 script.Deselect();
                 --nInstances;
             }
+        }
+    }
+
+    /// <summary>
+    /// Finalise and place this object and all subsequent clones
+    /// </summary>
+    void FinalisePositions()
+    {
+        PlaceObject();
+        foreach(GameObject clone in clones)
+        {
+            Dragable script = clone.GetComponent<Dragable>();
+            script.PlaceObject();
         }
     }
 

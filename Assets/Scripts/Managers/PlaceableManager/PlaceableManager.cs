@@ -33,11 +33,8 @@ public class PlaceableManager : MonoBehaviour
     /// <param name="obj"> Placeable object to spawn </param>
     public void IncrementObjCount(GameObject obj)
     {
-        // Remove '(Clone)' from the GameObject name
-        string objName = obj.name.Remove(obj.name.IndexOf('('));
-
         for (int i = 0; i < spawnableItems.Count; i++)
-            if (objName.Equals(spawnableItems[i].Name))
+            if (obj.name.Equals(spawnableItems[i].Name))
                 spawnableItems[i].PCount++;
     }
 
@@ -47,11 +44,8 @@ public class PlaceableManager : MonoBehaviour
     /// <param name="obj"> Placeable object which has been removed </param>
     public void DecrementObjCount(GameObject obj)
     {
-        // Remove '(Clone)' from the GameObject name
-        string objName = obj.name.Remove(obj.name.IndexOf('('));
-
         for (int i = 0; i < spawnableItems.Count; i++)
-            if (objName.Equals(spawnableItems[i].Name))
+            if (obj.name.Equals(spawnableItems[i].Name))
                 spawnableItems[i].PCount--;
     }
 
@@ -62,11 +56,32 @@ public class PlaceableManager : MonoBehaviour
     public bool CheckCanSpawn(GameObject obj)
     {
         bool capReached = false;
+
         // TODO: Player will need to be notified the spawn cap has been reached
         for (int i = 0; i < spawnableItems.Count; i++)
+            // Don't need to remove (Clone) from the name because usually we are passing in the prefab name directly
             if (obj.name.Equals(spawnableItems[i].Name))
                 capReached = spawnableItems[i].isCapReached();
 
         return (canSpawn && !capReached) ? true : false;
+    }
+
+    /// <summary>
+    /// Check whether obj can be cloned (mainly used by dragable objects. It cannot if its spawn cap has been reached.
+    /// </summary>
+    /// <param name="obj">Object to clone</param>
+    /// <returns></returns>
+    public bool CheckCanClone(GameObject obj)
+    {
+        bool capReached = false;
+
+        //TODO: Player will need to be notified the spawn cap has been reached
+        for(int i = 0; i < spawnableItems.Count; i++)
+        {
+            if (obj.name.Equals(spawnableItems[i].Name))
+                capReached = spawnableItems[i].isCapReached();
+        }
+
+        return (!capReached) ? true : false;
     }
 }
