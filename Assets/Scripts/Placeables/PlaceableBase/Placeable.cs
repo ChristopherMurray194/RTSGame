@@ -21,16 +21,18 @@ public class Placeable : MonoBehaviour
     Color customRed = new Color(1f, .8f, .64f, .3f);
     /// <summary> Determines whether the object has already been placed </summary>
     bool isPlaced = false;
-    int floorMask;
-    PlaceableManager placeableMgrScript;
+    protected int floorMask;
+    protected PlaceableManager placeableMgrScript;
 
     /// <summary> The Y value of the floor hit </summary>
     float floorY = 0f;
 
-    void Awake()
+    protected virtual void Awake()
     {
-        AddRigidBody();
-        AddBoxCollider();
+        if(GetComponent<Rigidbody>() == null)
+            AddRigidBody();
+        if(GetComponent<BoxCollider>() == null || GetComponentInChildren<BoxCollider>() == null)
+            AddBoxCollider();
 
         floorMask = LayerMask.GetMask("Floor"); // Get the mask from the Floor layer
         
@@ -61,7 +63,7 @@ public class Placeable : MonoBehaviour
         ApplyCanPlaceShader();
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if (Input.GetMouseButtonDown(0)) // 0 for left mouse button
             PlaceObject();
@@ -165,7 +167,7 @@ public class Placeable : MonoBehaviour
     /// <summary>
     /// Handles the logic for moving the object based on the mouse position.
     /// </summary>
-    void DeterminePosition()
+    protected void DeterminePosition()
     {
         // Cast a ray from the main camera to the mouse position
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -230,7 +232,7 @@ public class Placeable : MonoBehaviour
     /// <summary>
     /// Rotate the placeable object 90 degrees.
     /// </summary>
-    void Rotate()
+    protected void Rotate()
     {
         transform.Rotate(new Vector3(0f, 1f, 0f), 90f, Space.Self);
     }
@@ -238,7 +240,7 @@ public class Placeable : MonoBehaviour
     /// <summary>
     /// Finalises the placeable object's position.
     /// </summary>
-    void PlaceObject()
+    protected void PlaceObject()
     {
         // If the object can be placed and has not already been placed.
         if (canPlace)
@@ -288,7 +290,7 @@ public class Placeable : MonoBehaviour
     /// <summary>
     /// This object is no longer going to be placed, destroy it.
     /// </summary>
-    void Deselect()
+    protected void Deselect()
     {
         // Notifiy the manager that a new placeable object can be spawned in place of this one, as we are about to destroy it
         placeableMgrScript.CanSpawn = true;
