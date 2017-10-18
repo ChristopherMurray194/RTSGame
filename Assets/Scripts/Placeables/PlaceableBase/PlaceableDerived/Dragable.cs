@@ -88,7 +88,7 @@ public class Dragable : Placeable
         for (int i = 0; i < nInstances; i++)
         {
             Vector3 temp = clones[i].transform.position;
-            temp.x = gameObject.transform.position.x + -(objectWidth * (i + 1));
+            temp.x = (gameObject.transform.position.x + (objectWidth * (i + 1)) * Mathf.Sign(positionToMouse().x));
             clones[i].transform.position = temp;
         }
     }
