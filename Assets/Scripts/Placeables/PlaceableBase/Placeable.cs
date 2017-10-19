@@ -14,7 +14,7 @@ public class Placeable : MonoBehaviour
     /// <summary> List of renderers found in children </summary>
     List<Renderer> renderers = new List<Renderer>();
     /// <summary> List of intial material colours found in children </summary>
-    List<Color> matInitColours = new List<Color>();
+    protected List<Color> matInitColours = new List<Color>();
     /// <summary> Object can be placed colour </summary>
     Color customGreen = new Color(.46f, .89f, .38f, .3f);
     /// <summary> Object cannot be placed colour </summary>

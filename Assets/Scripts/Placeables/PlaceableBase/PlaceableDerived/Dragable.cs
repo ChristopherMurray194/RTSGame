@@ -5,8 +5,8 @@ using UnityEngine;
 public class Dragable : Placeable
 {
     public float objectWidth = 3.74f;
-    public bool isInitiallyPlaced = false;
-    public bool isClone = false;
+    protected bool isInitiallyPlaced = false;
+    protected bool isClone = false;
     // Number of instantiated objects
     int nInstances = 0;
     // List of instantiated objects
@@ -71,9 +71,14 @@ public class Dragable : Placeable
                 Dragable script = copy.GetComponent<Dragable>();
                 script.isInitiallyPlaced = true;
                 script.isClone = true;
+                /* 
+                 * Because Instantiate function creates an exact clone, the clone will intialise (in Awake) 
+                 * its material to the green material THIS object is intially set to.
+                 * THEREFORE pass the clones the correct initial materials.
+                 */
+                script.matInitColours = matInitColours;
                 // Number of instances in the scene has increased
                 ++nInstances;
-                // Add to the list
                 clones.Add(copy);
             }
         }
@@ -121,7 +126,7 @@ public class Dragable : Placeable
     }
 
     /// <summary>
-    /// Finalise and place this object and all subsequent clones
+    /// Finalise and place this object and all subsequent clones.
     /// </summary>
     void FinalisePositions()
     {
@@ -133,6 +138,10 @@ public class Dragable : Placeable
         }
     }
 
+    /// <summary>
+    /// Return a vector from this object's position to the mouse's position.
+    /// </summary>
+    /// <returns> Vector from this game object's position to the mouse's position </returns>
     Vector3 positionToMouse()
     {
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
