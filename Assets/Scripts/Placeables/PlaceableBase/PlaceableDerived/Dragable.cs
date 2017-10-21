@@ -90,11 +90,28 @@ public class Dragable : Placeable
     /// </summary>
     void DetermineClonePos()
     {
-        for (int i = 0; i < nInstances; i++)
+        // The current y rotation angle
+        float yAngle = transform.rotation.eulerAngles.y;
+
+        if (yAngle == 0 || yAngle == 180)
         {
-            Vector3 temp = clones[i].transform.position;
-            temp.x = (gameObject.transform.position.x + (objectWidth * (i + 1)) * Mathf.Sign(positionToMouse().x));
-            clones[i].transform.position = temp;
+            // Clone along the z axis
+            for (int i = 0; i < nInstances; i++)
+            {
+                Vector3 temp = clones[i].transform.position;
+                temp.z = (gameObject.transform.position.z + (objectWidth * (i + 1)) * Mathf.Sign(positionToMouse().z));
+                clones[i].transform.position = temp;
+            }
+        }
+        else if (yAngle == 90 || yAngle == 270)
+        {
+            // Clone along the x axis
+            for (int i = 0; i < nInstances; i++)
+            {
+                Vector3 temp = clones[i].transform.position;
+                temp.x = (gameObject.transform.position.x + (objectWidth * (i + 1)) * Mathf.Sign(positionToMouse().x));
+                clones[i].transform.position = temp;
+            }
         }
     }
 
