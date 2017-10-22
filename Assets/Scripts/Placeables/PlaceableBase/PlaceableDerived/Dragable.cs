@@ -19,7 +19,6 @@ public class Dragable : Placeable
 
     protected override void Update()
     {
-        Debug.Log(gameObject.transform.forward);
         if (canPlace)
         {
             // If the left mouse button is pressed once
@@ -94,31 +93,34 @@ public class Dragable : Placeable
     /// </summary>
     void DetermineClonePos()
     {
-        // The current y rotation angle
         float yAngle = transform.rotation.eulerAngles.y;
-        
-        if (transform.forward.z >= 0)
+        if ((yAngle >= 45 && yAngle < 135))
         {
-            // Clone along the z axis
-            for (int i = 0; i < nInstances; i++)
-            {
-                clones[i].transform.position = gameObject.transform.position + 
-                                            ((gameObject.transform.forward) * (objectWidth * (i + 1))) 
-                                            * Mathf.Sign(gameObject.transform.forward.z);
-            }
+            AssignClonePos(Mathf.Sign(positionToMouse().x));
         }
-        else if (transform.forward.z < 0)
+        else if ((yAngle >= 315 || yAngle < 45))
         {
-            // Clone along the x axis
-            for (int i = 0; i < nInstances; i++)
-            {
-                clones[i].transform.position = gameObject.transform.position + 
-                                            ((gameObject.transform.forward) * (objectWidth * (i + 1))) 
-                                            * Mathf.Sign(gameObject.transform.forward.x);
-            }
+            AssignClonePos(Mathf.Sign(positionToMouse().z));
         }
+        else if(yAngle >= 135 && yAngle < 255)
+        {
+            AssignClonePos(-Mathf.Sign(positionToMouse().z));
+        }
+        else if (yAngle >= 255 && yAngle < 315)
+        {
+            AssignClonePos(-Mathf.Sign(positionToMouse().x));
+        }
+    }
 
-        Debug.DrawRay(transform.position, (transform.forward * transform.rotation.y) * 100f, Color.red);
+    void AssignClonePos(float axis)
+    {
+        // Clone along the given axis
+        for (int i = 0; i < nInstances; i++)
+        {
+            clones[i].transform.position = gameObject.transform.position +
+                                        ((gameObject.transform.forward) * (objectWidth * (i + 1)))
+                                        * axis;
+        }
     }
 
     /// <summary>

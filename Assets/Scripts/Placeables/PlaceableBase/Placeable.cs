@@ -114,7 +114,7 @@ public class Placeable : MonoBehaviour
             // Reduce the scale of the collider slightly so placeables can be placed flush with the same type
             Vector3 scaleVec = bc.size;
             scaleVec.x = Mathf.Floor(scaleVec.x);
-            scaleVec.y = Mathf.Floor(scaleVec.y);
+            scaleVec.y = Mathf.Floor(scaleVec.y) + 0.1f;
             scaleVec.z = Mathf.Floor(scaleVec.z);
             bc.size = scaleVec;
         }
@@ -130,7 +130,7 @@ public class Placeable : MonoBehaviour
                 bc.isTrigger = true;
                 Vector3 scaleVec = bc.size;
                 scaleVec.x = Mathf.Floor(scaleVec.x);
-                scaleVec.y = Mathf.Floor(scaleVec.y);
+                scaleVec.y = Mathf.Floor(scaleVec.y) + 0.1f;
                 scaleVec.z = Mathf.Floor(scaleVec.z);
                 bc.size = scaleVec;
             }
