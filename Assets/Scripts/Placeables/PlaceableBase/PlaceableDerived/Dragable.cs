@@ -19,23 +19,27 @@ public class Dragable : Placeable
 
     protected override void Update()
     {
-        // If the left mouse button is pressed once
-        if (Input.GetMouseButtonDown(0) && !isInitiallyPlaced)
+        Debug.Log(gameObject.transform.forward);
+        if (canPlace)
         {
-            // Place the object but do not finalise its position by invoking PlaceObject function
-            isInitiallyPlaced = true;
-        }
-        // If the left mouse button is pressed a second time
-        else if(Input.GetMouseButtonDown(0) && isInitiallyPlaced)
-        {
-            FinalisePositions();
-        }
+            // If the left mouse button is pressed once
+            if (Input.GetMouseButtonDown(0) && !isInitiallyPlaced)
+            {
+                // Place the object but do not finalise its position by invoking PlaceObject function
+                isInitiallyPlaced = true;
+            }
+            // If the left mouse button is pressed a second time
+            else if (Input.GetMouseButtonDown(0) && isInitiallyPlaced)
+            {
+                FinalisePositions();
+            }
 
-        if(isInitiallyPlaced && !isClone)
-        {
-            InstantiateClones();
-            DetermineClonePos();
-            DestroyClones();
+            if (isInitiallyPlaced && !isClone)
+            {
+                InstantiateClones();
+                DetermineClonePos();
+                DestroyClones();
+            }
         }
 
         if (Input.GetMouseButtonDown(1)) // 1 for right mouse button
@@ -92,27 +96,29 @@ public class Dragable : Placeable
     {
         // The current y rotation angle
         float yAngle = transform.rotation.eulerAngles.y;
-
-        if (yAngle == 0 || yAngle == 180)
+        
+        if (transform.forward.z >= 0)
         {
             // Clone along the z axis
             for (int i = 0; i < nInstances; i++)
             {
-                Vector3 temp = clones[i].transform.position;
-                temp.z = (gameObject.transform.position.z + (objectWidth * (i + 1)) * Mathf.Sign(positionToMouse().z));
-                clones[i].transform.position = temp;
+                clones[i].transform.position = gameObject.transform.position + 
+                                            ((gameObject.transform.forward) * (objectWidth * (i + 1))) 
+                                            * Mathf.Sign(gameObject.transform.forward.z);
             }
         }
-        else if (yAngle == 90 || yAngle == 270)
+        else if (transform.forward.z < 0)
         {
             // Clone along the x axis
             for (int i = 0; i < nInstances; i++)
             {
-                Vector3 temp = clones[i].transform.position;
-                temp.x = (gameObject.transform.position.x + (objectWidth * (i + 1)) * Mathf.Sign(positionToMouse().x));
-                clones[i].transform.position = temp;
+                clones[i].transform.position = gameObject.transform.position + 
+                                            ((gameObject.transform.forward) * (objectWidth * (i + 1))) 
+                                            * Mathf.Sign(gameObject.transform.forward.x);
             }
         }
+
+        Debug.DrawRay(transform.position, (transform.forward * transform.rotation.y) * 100f, Color.red);
     }
 
     /// <summary>
@@ -121,14 +127,14 @@ public class Dragable : Placeable
     void DestroyClones()
     {
         // Total number of clones that should currently be spawned
-        float numberToSpawn = Mathf.Floor(positionToMouse().magnitude / objectWidth);
+        float numberSpawned = Mathf.Floor(positionToMouse().magnitude / objectWidth);
         // If the combined width of the clone instances AND this object's width is greater than
         // the length of the vector from this object's position to the mouse's position...
         // we need to remove some clones.
-        if(numberToSpawn < nInstances)
+        if(numberSpawned < nInstances)
         {
             // Remove the last clone from the list n (the difference between numberToSpawn and the number of clones in the scene) times
-            for(int i = 0; i < (nInstances - numberToSpawn); i++)
+            for(int i = 0; i < (nInstances - numberSpawned); i++)
             {
                 // Create a copy of the last clone in the list
                 GameObject lastClone = clones[clones.Count - 1];
@@ -148,6 +154,7 @@ public class Dragable : Placeable
     void FinalisePositions()
     {
         PlaceObject();
+
         foreach(GameObject clone in clones)
         {
             Dragable script = clone.GetComponent<Dragable>();

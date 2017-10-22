@@ -9,8 +9,10 @@ public class Placeable : MonoBehaviour
     /// <summary> Time it takes to 'build' the object - essentially how long it takes to rise up from the ground </summary>
     public float buildTime = 2.0f;
     public float snapValue = 5f;
+    /// <summary> The angle to rotate by when the R key is pressed </summary>
+    public float rotationIncrement = 90.0f;
     /// <summary> Can the object be placed at its current position? </summary>
-    bool canPlace = true;
+    protected bool canPlace = true;
     /// <summary> List of renderers found in children </summary>
     List<Renderer> renderers = new List<Renderer>();
     /// <summary> List of intial material colours found in children </summary>
@@ -159,7 +161,7 @@ public class Placeable : MonoBehaviour
                 r.material.color = customGreen;
     }
 
-    void ApplyRedMaterial()
+    protected void ApplyRedMaterial()
     {
         if (renderers != null)
             foreach(Renderer r in renderers)
@@ -236,7 +238,7 @@ public class Placeable : MonoBehaviour
     /// </summary>
     protected void Rotate()
     {
-        transform.Rotate(new Vector3(0f, 1f, 0f), 90f, Space.Self);
+        transform.Rotate(new Vector3(0f, 1f, 0f), rotationIncrement, Space.Self);
     }
 
     /// <summary>
