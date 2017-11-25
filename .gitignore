@@ -6,6 +6,10 @@ Assets/SimpleTownLite/**
 Assets/SimpleTownLite.meta
 Assets/PolygonVikings/**
 Assets/PolygonVikings.meta
+Assets/MoveMotionPack/**
+Assets/MoveMotionPack.meta
+Assets/Idle MoCap/**
+Assets/Idle MoCap.meta
 
 *.csproj
 *.sln

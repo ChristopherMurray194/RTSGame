@@ -19,6 +19,10 @@ public class Dragable : Placeable
 
     protected override void Update()
     {
+        // If the R key is being pressed
+        if (Input.GetKey(KeyCode.R))
+            Rotate();
+
         if (canPlace)
         {
             // If the left mouse button is pressed once
@@ -50,8 +54,10 @@ public class Dragable : Placeable
         // If the object has not already been placed then we can move it.
         if (!isInitiallyPlaced)
         {
-            if (Input.GetKeyDown(KeyCode.R))
-            Rotate();
+            if (Input.GetKey(KeyCode.R))
+            {
+                Rotate();
+            }
 
             // If the game object and therefore this script have not been destroyed
             if (this != null)
