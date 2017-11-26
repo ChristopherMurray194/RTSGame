@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine.AI;
 using UnityEngine;
 
@@ -72,7 +73,7 @@ public class Placeable : MonoBehaviour
         ApplyCanPlaceShader();
 
         // Get the NavMeshObstacles
-        if(GetComponent<NavMeshObstacle>() != null)
+        if (GetComponent<NavMeshObstacle>() != null)
         {
             navObstacles.Add(GetComponent<NavMeshObstacle>());
         }
@@ -83,6 +84,9 @@ public class Placeable : MonoBehaviour
             if (tempObstacles != null)
                 foreach (NavMeshObstacle o in tempObstacles)
                     navObstacles.Add(o);
+
+            if (navObstacles.Count == 0)
+                Debug.Log("There is no NavMeshObstacle component added to the " + gameObject.name + " GameObject!");
         }
     }
 
