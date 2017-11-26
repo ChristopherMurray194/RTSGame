@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.AI;
 using UnityEngine;
 
 public class Placeable : MonoBehaviour
@@ -26,6 +27,9 @@ public class Placeable : MonoBehaviour
     protected int floorMask;
     protected PlaceableManager placeableMgrScript;
 
+    /// <summary> The list of NavMeshObstacles attached to this object </summary>
+    List<NavMeshObstacle> navObstacles = new List<NavMeshObstacle>();
+
     /// <summary> The Y value of the floor hit </summary>
     float floorY = 0f;
 
@@ -50,7 +54,7 @@ public class Placeable : MonoBehaviour
         // If there is a renderer component in the main game object, I assume there is no children
         if (GetComponent<Renderer>() != null)
         {
-                renderers.Add(GetComponent<Renderer>());
+            renderers.Add(GetComponent<Renderer>());
         }
         else
         {
@@ -66,6 +70,20 @@ public class Placeable : MonoBehaviour
             matInitColours.Add(r.material.color);
 
         ApplyCanPlaceShader();
+
+        // Get the NavMeshObstacles
+        if(GetComponent<NavMeshObstacle>() != null)
+        {
+            navObstacles.Add(GetComponent<NavMeshObstacle>());
+        }
+        else
+        {
+            // Obtain all the navMeshObstacles components from the children
+            NavMeshObstacle[] tempObstacles = GetComponentsInChildren<NavMeshObstacle>();
+            if (tempObstacles != null)
+                foreach (NavMeshObstacle o in tempObstacles)
+                    navObstacles.Add(o);
+        }
     }
 
     protected virtual void Update()
@@ -264,6 +282,10 @@ public class Placeable : MonoBehaviour
             // Make the object rise from the ground
             StartCoroutine(Rise());
             gameObject.isStatic = true;
+            // Enable the navMeshObstacle components
+            foreach (NavMeshObstacle o in navObstacles)
+                o.enabled = true;
+
             // Object has been placed disable this script!
             this.enabled = false;
         }
