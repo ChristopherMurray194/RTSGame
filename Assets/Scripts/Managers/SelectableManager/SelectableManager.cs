@@ -12,6 +12,9 @@ public class SelectableManager : MonoBehaviour
     public GameObject selectionMarker;
     public float markerOffset = 1f;
 
+    // Essentially just used to control the entering of the ToggleSelectedUI function within the Update function.
+    bool uiShown = false;
+
 
     void Start()
     {
@@ -25,10 +28,26 @@ public class SelectableManager : MonoBehaviour
             GetSelectedObject();
         }
 
+        // If an object has been selected
         if (selectedObject != null)
+        {
+            // Position the marker above the selected object
             PositionMarker();
+            // If the SelectedUI is not being shown
+            if(!uiShown)
+                // Show the SelectedUI
+                ToggleSelectedUI(true);
+        }
+        // If there is currently no selectedObect
         else
+        {
+            // Hide the marker
             selectionMarker.SetActive(false);
+            // If the SelectedUI is being shown
+            if(uiShown)
+                // Hide the SelectedUI
+                ToggleSelectedUI(false);
+        }
     }
 
     /// <summary>
@@ -66,11 +85,32 @@ public class SelectableManager : MonoBehaviour
         selectionMarker.SetActive(true);
 
         Collider col = selectedObject.GetComponent<Collider>();
-        if(col != null)
+        if (col != null)
         {
             Vector3 markerPos = selectedObject.transform.position;
             markerPos.y += col.bounds.extents.magnitude + markerOffset;
             selectionMarker.transform.position = markerPos;
+        }
+    }
+
+    /// <summary>
+    /// Toggles the SelectedUI GameObject via the passed parameter.
+    /// </summary>
+    void ToggleSelectedUI(bool isActive)
+    {
+        if (isActive)
+        {
+            GameObject HUD = GameObject.Find("HUDCanvas");
+            GameObject sUI = HUD.transform.FindChild("SelectedUI").gameObject;
+            sUI.SetActive(isActive);
+            uiShown = isActive;
+        }
+        else if(!isActive)
+        {
+            GameObject HUD = GameObject.Find("HUDCanvas");
+            GameObject sUI = HUD.transform.FindChild("SelectedUI").gameObject;
+            sUI.SetActive(isActive);
+            uiShown = isActive;
         }
     }
 }
