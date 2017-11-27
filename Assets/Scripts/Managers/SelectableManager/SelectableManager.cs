@@ -40,11 +40,11 @@ public class SelectableManager : MonoBehaviour
             selectedObject = hitObject.GetComponent<Selectable>();
             selectedObject.IsSelected = true;
         }
-        // Otherwise we have not selected an object
+        // Otherwise we are not clicking on a selectable object
         else if (selectedObject != null)
         {
             // Notify the currently selected object it has been deselected.
-            selectedObject.IsSelected = false;
+            //selectedObject.IsSelected = false;
             selectedObject = null;
         }
     }

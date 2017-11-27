@@ -41,8 +41,8 @@ public class BaseCharacter : MonoBehaviour
             anim.SetBool("isWalking", isWalking);
         }
 
-        // If this character is currently selected AND the left mouse button has been pressed
-        if (selectScript.IsSelected && Input.GetMouseButtonDown(0))
+        // If this character is currently selected AND the right mouse button has been pressed
+        if (selectScript.IsSelected && Input.GetMouseButtonDown(1))
         {
             Walk();
         }
