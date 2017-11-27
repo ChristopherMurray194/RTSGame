@@ -10,6 +10,10 @@ Assets/MoveMotionPack/**
 Assets/MoveMotionPack.meta
 Assets/Idle MoCap/**
 Assets/Idle MoCap.meta
+Assets/SimpleFX/**
+Assets/SimpleFX.meta
+Assets/SimpleForestAnimal/**
+Assets/SimpleForestAnimal.meta
 
 *.csproj
 *.sln
