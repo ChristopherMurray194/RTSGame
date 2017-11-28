@@ -12,6 +12,10 @@ public class Selectable : MonoBehaviour
         set { isSelected = value; }
     }
 
+    /// <summary> The source image to be displayed on the UI </summary>
+    public GameObject sourceImage;
+    
+
 	void Start ()
     {
         // Ensure this gameobject to the 'Selectable' Layer

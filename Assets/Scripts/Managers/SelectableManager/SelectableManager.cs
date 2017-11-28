@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SelectableManager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class SelectableManager : MonoBehaviour
     // Essentially just used to control the entering of the ToggleSelectedUI function within the Update function.
     bool uiShown = false;
 
+    /// <summary> Selected object sprites </summary>
+    List<Sprite> sprites = new List<Sprite>();
 
     void Start()
     {
@@ -44,12 +47,16 @@ public class SelectableManager : MonoBehaviour
             // Hide the marker
             selectionMarker.SetActive(false);
             // If the SelectedUI is being shown
-            if(uiShown)
+            if (uiShown)
+            {
                 // Hide the SelectedUI
                 ToggleSelectedUI(false);
+                // Clear the selectedUI panel
+                ClearSelectedUI();
+            }
         }
     }
-
+    
     /// <summary>
     /// Notify an object it has been selected and add it to the list of selected objects.
     /// </summary>
@@ -67,6 +74,8 @@ public class SelectableManager : MonoBehaviour
             // Notify the object it has been selected
             Selectable selectableScript = selectedObject.GetComponent<Selectable>();
             selectableScript.IsSelected = true;
+            // Display the selected object on the UI
+            DisplaySelected(selectableScript.sourceImage);
         }
         // Otherwise we are not clicking on a selectable object
         else if (selectedObject != null)
@@ -112,5 +121,34 @@ public class SelectableManager : MonoBehaviour
             sUI.SetActive(isActive);
             uiShown = isActive;
         }
+    }
+
+    /// <summary>
+    /// Clear the SelectedUI panel of images
+    /// </summary>
+    void ClearSelectedUI()
+    {
+        GameObject HUD = GameObject.Find("HUDCanvas");
+        GameObject sUI = HUD.transform.FindChild("SelectedUI").gameObject;
+        GameObject sP = sUI.transform.FindChild("SelectionsPanel").gameObject;
+
+        // Destroy the UI image game objects
+        foreach (RectTransform g in sP.transform)
+            Destroy(g.gameObject);
+    }
+
+    /// <summary>
+    /// Display the UI sprite for the selected objects.
+    /// </summary>
+    void DisplaySelected(GameObject image)
+    {
+        GameObject HUD = GameObject.Find("HUDCanvas");
+        GameObject sUI = HUD.transform.FindChild("SelectedUI").gameObject;
+        GameObject sP = sUI.transform.FindChild("SelectionsPanel").gameObject;
+
+        GameObject img = GameObject.Instantiate(image);
+        img.transform.SetParent(sP.transform);
+        RectTransform rt = img.GetComponent<RectTransform>();
+        rt.anchoredPosition = new Vector3(5f, 0f, 0f);
     }
 }
