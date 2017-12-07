@@ -23,7 +23,7 @@ public class Selectable : MonoBehaviour
         gameObject.layer = 9;
 	}
 	
-	void Update ()
+	void FixedUpdate ()
     {
         /*
          * If this object is currently selected and the corresponding mouse button below, 
@@ -31,6 +31,5 @@ public class Selectable : MonoBehaviour
          */
         if (isSelected && Input.GetMouseButtonDown(0))
             isSelected = false;
-
 	}
 }
